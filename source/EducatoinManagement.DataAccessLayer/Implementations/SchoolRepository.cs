@@ -16,9 +16,11 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
     public class SchoolRepository: ISchoolRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
         public SchoolRepository(IConfiguration configuration)
         {
             _configuration = configuration;
+            baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
         }
 
         public async Task<IActionResult> GeneratePrimaryData(int lowerBoundPerRegion, int UpperBoundPerRegion)
@@ -26,26 +28,8 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
             var procedure = "[GenerateRandomSchools]";
             var values = new { LowerBoundSchoolsPerRegion = lowerBoundPerRegion,
                 UpperBoundSchoolsPerRegion = UpperBoundPerRegion };
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                try
-                {
-                    if (connection.QueryAsync("[SchoolsSelectAll]", null,
-                        commandType: CommandType.StoredProcedure).Result.ToList().Count == 0)
-                    {
-                        await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure);
-                        return new StatusCodeResult(201);
-                    }
 
-                    return new StatusCodeResult(208);
-                }
-                catch (Exception ex)
-                {
-                    // to do logging ex handling
-                }
-            }
-
-            return new StatusCodeResult(400);
+            return await baseDataGeneringRepository.GenerateDataAsync(procedure, "[SchoolsSelectAll]", values);
         }
     }
 }

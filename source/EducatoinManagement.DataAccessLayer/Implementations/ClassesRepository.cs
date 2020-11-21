@@ -15,9 +15,13 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
     public class ClassesRepository : IClassesRepository
     {
         private readonly IConfiguration configuration;
+
+        private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
+
         public ClassesRepository(IConfiguration configuration)
         {
             this.configuration = configuration;
+            baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
         }
 
         public async Task<IActionResult> GeneratePrimaryData(int maxAmountOfParalelClasses)
@@ -27,26 +31,8 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
             {
                 UpperParalelAmount = maxAmountOfParalelClasses
             };
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-            {
-                try
-                {
-                    if (connection.QueryAsync("[ClassesSelectAny]", null,
-                        commandType: CommandType.StoredProcedure).Result.ToList().Count == 0)
-                    {
-                        await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure);
-                        return new StatusCodeResult(201);
-                    }
 
-                    return new StatusCodeResult(208);
-                }
-                catch (Exception ex)
-                {
-                    // to do logging ex handling
-                }
-            }
-
-            return new StatusCodeResult(400);
+            return await baseDataGeneringRepository.GenerateDataAsync(procedure, "[ClassesSelectAny]", values);
         }
     }
 }

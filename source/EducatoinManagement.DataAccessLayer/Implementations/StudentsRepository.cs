@@ -14,9 +14,12 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
     public class StudentsRepository : IStudentsRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
+
         public StudentsRepository(IConfiguration configuration)
         {
             _configuration = configuration;
+            baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
         }
 
         public List<Student> GetStudents(CancellationToken cancellationToken = default)
