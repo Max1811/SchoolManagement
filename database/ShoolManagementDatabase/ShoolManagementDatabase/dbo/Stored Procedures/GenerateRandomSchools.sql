@@ -26,6 +26,10 @@ BEGIN
 	WHILE @Loop <= @RegionsCount  
 	BEGIN
 
+	set @RegionId = (Select id From(
+			Select Row_Number() Over (Order By id) As RowNum, * From classes) t2 
+			Where RowNum = @Loop)
+
 	set @SchoolsPerRegionNumber = Rand()
 		*(@UpperBoundSchoolsPerRegion-@LowerBoundSchoolsPerRegion)+@LowerBoundSchoolsPerRegion
 	
@@ -35,7 +39,7 @@ BEGIN
 
 	set @SchoolNumber = Rand()*(500-1)+1
 	INSERT INTO [Schools](RegionId,SchoolNumber, CreationDate, IsDeleted)
-		VALUES (@Loop,@SchoolNumber,@CreationDate,@IsDeleted)
+		VALUES (@RegionId,@SchoolNumber,@CreationDate,@IsDeleted)
 
 	set @SchoolIndex += 1
 	end	
