@@ -19,6 +19,12 @@ namespace EducatoinManagement.DependencyResolver
             services.AddTransient<ISchoolRepository, SchoolRepository>();
             services.AddTransient<ISchoolsService, SchoolsService>();
             services.AddTransient<IRegionsRepository, RegionsRepository>();
+            services.AddTransient<ISubjectsService, SubjectsService>();
+            services.AddTransient<ISubjectsRepository, SubjectsRepository>();
+            services.AddTransient<IGradesService, GradesService>();
+            services.AddTransient<IGradesRepository, GradesRepository>();
+            services.AddTransient<IStudentsSubjectsRespository, StudentsSubjectsRepository>();
+            services.AddTransient<IStudentsSubjectsService, StudentsSubjectsService>();
             //todo register services
         }
     }

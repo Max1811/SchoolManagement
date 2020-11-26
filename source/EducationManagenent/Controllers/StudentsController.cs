@@ -20,17 +20,17 @@ namespace EducationManagenent.Controllers
         }
 
         [HttpGet("get-all-students")]
-        public IEnumerable<Student> GetAllStudents()
+        public async Task<IEnumerable<Student>> GetAllStudents()
         {
-            List<Student> students = _studentsService.GetAllStudents();
+            IEnumerable<Student> students = await _studentsService.GetAllStudents();
 
             return students;
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<Student> Get(int id)
         {
-            return "value";
+            return await _studentsService.GetStudentById(id);
         }
 
         [HttpPost]
@@ -44,8 +44,9 @@ namespace EducationManagenent.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
+            await _studentsService.DeleteStudentById(id);
         }
     }
 }

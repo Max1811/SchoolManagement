@@ -36,7 +36,8 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
                         returnStatusCodeResult =  new StatusCodeResult(201);
                     }
 
-                    returnStatusCodeResult = new StatusCodeResult(208);
+                    else
+                        returnStatusCodeResult = new StatusCodeResult(208);
                 }
                 catch (Exception ex)
                 {
