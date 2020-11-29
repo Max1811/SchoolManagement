@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using EducatoinManagement.DataAccessLayer.Contracts;
+using EducatoinManagement.DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -13,14 +14,20 @@ using System.Threading.Tasks;
 
 namespace EducatoinManagement.DataAccessLayer.Implementations
 {
-    public class SchoolRepository: ISchoolRepository
+    public class SchoolRepository: GenericCrudRepository<School>, ISchoolRepository
     {
         private readonly IConfiguration _configuration;
         private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
         public SchoolRepository(IConfiguration configuration)
+            :base(configuration)
         {
             _configuration = configuration;
             baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
+        }
+
+        public async Task Delete(int id)
+        {
+            await Delete(id, "Schools");
         }
 
         public async Task<IActionResult> GeneratePrimaryData(int lowerBoundPerRegion, int UpperBoundPerRegion)
@@ -30,6 +37,11 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
                 UpperBoundSchoolsPerRegion = UpperBoundPerRegion };
 
             return await baseDataGeneringRepository.GenerateDataAsync(procedure, "[SchoolsSelectAll]", values);
+        }
+
+        public async Task<School> Get(int id)
+        {
+            return await Get(id, "Schools");
         }
     }
 }

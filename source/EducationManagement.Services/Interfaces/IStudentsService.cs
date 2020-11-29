@@ -10,12 +10,14 @@ namespace EducationManagement.Services.Interfaces
 {
     public interface IStudentsService
     {
-        public Task<List<Student>> GetAllStudents();
+        public Task<List<Student>> GetAllStudentsAsync();
 
-        public Task<Student> GetStudentById(int id);
+        public Task<Student> Get(int id);
 
         public Task<IActionResult> GenerateRandomData(int minStudentsCount, int maxStudentsCount);
 
         public Task DeleteStudentById(int id);
+
+        public Task InsertStudent(string firstName, string lastName, string patronymic, int age, int classId);
     }
 }

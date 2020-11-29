@@ -27,14 +27,28 @@ namespace EducationManagement.Services.Implementations
             return await studentsRepository.GeneratePrimaryData(minStudentsCount, maxStudentsCount);
         }
 
-        public async Task<List<Student>> GetAllStudents()
+        public async Task<List<Student>> GetAllStudentsAsync()
         {
             return await studentsRepository.GetStudents();
         }
 
-        public async Task<Student> GetStudentById(int id)
+        public async Task<Student> Get(int id)
         {
             return await studentsRepository.GetStudentById(id);
+        }
+
+        public async Task InsertStudent(string firstName, string lastName, string patronymic, int age, int classId)
+        {
+            Student student = new Student()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Patronymic = patronymic,
+                Age = age,
+                ClassId = classId
+            };
+
+            await studentsRepository.InsertStudentAsync(student);
         }
     }
 }

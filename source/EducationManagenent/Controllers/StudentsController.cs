@@ -19,10 +19,10 @@ namespace EducationManagenent.Controllers
             _studentsService = studentsService;
         }
 
-        [HttpGet("get-all-students")]
-        public async Task<IEnumerable<Student>> GetAllStudents()
+        [HttpGet("get-all")]
+        public async Task<IEnumerable<Student>> GetAll()
         {
-            IEnumerable<Student> students = await _studentsService.GetAllStudents();
+            IEnumerable<Student> students = await _studentsService.GetAllStudentsAsync();
 
             return students;
         }
@@ -30,12 +30,21 @@ namespace EducationManagenent.Controllers
         [HttpGet("{id}")]
         public async Task<Student> Get(int id)
         {
-            return await _studentsService.GetStudentById(id);
+            return await _studentsService.Get(id);
         }
 
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("create-student")]
+        public async Task<IActionResult> Post(string firstName, string lastName, string Patronymic, int age, int classId)
         {
+            try
+            {
+                await _studentsService.InsertStudent(firstName, lastName, Patronymic, age, classId);
+                return new StatusCodeResult(201);
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(400);
+            }
         }
 
         [HttpPut("{id}")]

@@ -10,7 +10,7 @@ namespace EducatoinManagement.DataAccessLayer.Models
         public string Country { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime CreationDate { get; set; } 
         public bool IsDeleted { get; set; } = false;
 
         public Region(string country, string city, string street)

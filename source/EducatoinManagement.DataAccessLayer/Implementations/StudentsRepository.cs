@@ -14,12 +14,13 @@ using System.Threading.Tasks;
 
 namespace EducatoinManagement.DataAccessLayer.Implementations
 {
-    public class StudentsRepository : IStudentsRepository
+    public class StudentsRepository : GenericCrudRepository<Student>, IStudentsRepository
     {
         private readonly IConfiguration _configuration;
         private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
 
         public StudentsRepository(IConfiguration configuration)
+            :base(configuration)
         {
             _configuration = configuration;
             baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
@@ -27,17 +28,7 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
 
         public async Task DeleteStudentById(int id)
         {
-            var procedure = "[DeleteStudentById]";
-            var values = new
-            {
-                Id = id
-            };
-
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                connection.Open();
-                await connection.QueryAsync<Student>(procedure, values, commandType: CommandType.StoredProcedure);
-            }
+            await Delete(id, "Students");
         }
 
         public async Task<IActionResult> GeneratePrimaryData(int minStudentsCount, int maxStudentsCount)
@@ -54,32 +45,31 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
 
         public async Task<Student> GetStudentById(int id)
         {
-            var procedure = "[GetStudentById]";
+            return await Get(id, "Students");
+        }
+
+        public async Task<List<Student>> GetStudents()
+        {
+            return await GetAll("Students");
+        }
+
+        public async Task InsertStudentAsync(Student student)
+        {
+            var procedure = "[InsertStudent]";
             var values = new
             {
-                Id = id
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Patronymic = student.Patronymic,
+                Age = student.Age,
+                ClassId = student.ClassId
             };
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Student>(procedure, values, commandType: CommandType.StoredProcedure);
-                return result.FirstOrDefault();
+                await connection.QueryAsync<Student>(procedure, values, commandType: CommandType.StoredProcedure);
             }
         }
-
-        public async Task<List<Student>> GetStudents(CancellationToken cancellationToken = default)
-        {
-            var procedure = "[StudentsSelectAll]";
-
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                connection.Open();
-                var result = await connection.QueryAsync<Student>(procedure, commandType: CommandType.StoredProcedure);
-                return result.ToList();
-            }
-        }
-
-
     }
 }

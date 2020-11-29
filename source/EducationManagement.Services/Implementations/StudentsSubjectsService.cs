@@ -1,5 +1,6 @@
 ﻿using EducationManagement.Services.Interfaces;
 using EducatoinManagement.DataAccessLayer.Contracts;
+using EducatoinManagement.DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,19 @@ namespace EducationManagement.Services.Implementations
             this.studentsSubjectsRespository = studentsSubjectsRespository;
         }
 
+        public async Task Delete(int id)
+        {
+            await studentsSubjectsRespository.Delete(id);
+        }
+
         public async Task<IActionResult> GenerateRandomData(int subjectsPerStudent)
         {
             return await studentsSubjectsRespository.GeneratePrimaryData(subjectsPerStudent);
+        }
+
+        public async Task<StudentSubject> Get(int id)
+        {
+            return await studentsSubjectsRespository.Get(id);
         }
     }
 }

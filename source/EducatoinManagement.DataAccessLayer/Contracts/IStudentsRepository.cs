@@ -10,9 +10,10 @@ namespace EducatoinManagement.DataAccessLayer.Contracts
 {
     public interface IStudentsRepository
     {
-        public Task<List<Student>> GetStudents(CancellationToken token = default);
+        public Task<List<Student>> GetStudents();
         public Task<IActionResult> GeneratePrimaryData(int minStudentsCount, int maxStudentsCount);
         public Task<Student> GetStudentById(int id);
         public Task DeleteStudentById(int id);
+        Task InsertStudentAsync(Student student);
     }
 }

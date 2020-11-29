@@ -14,14 +14,20 @@ using System.Threading.Tasks;
 
 namespace EducatoinManagement.DataAccessLayer.Implementations
 {
-    public class RegionsRepository : IRegionsRepository
+    public class RegionsRepository : GenericCrudRepository<Region>, IRegionsRepository
     {
         private readonly IConfiguration _configuration;
         private readonly IBaseDataGeneringRepository baseDataGeneringRepository;
         public RegionsRepository(IConfiguration configuration)
+            :base(configuration)
         {
             _configuration = configuration;
             baseDataGeneringRepository = new BaseDataGeneratingRepository(configuration);
+        }
+
+        public async Task Delete(int id)
+        {
+            await Delete(id, "Regions");
         }
 
         public async Task<IActionResult> GeneratePrimaryData(int numberOfRegions, CancellationToken cancellationToken = default)
@@ -30,6 +36,11 @@ namespace EducatoinManagement.DataAccessLayer.Implementations
             var values = new { RegionsCount = numberOfRegions };
 
             return await baseDataGeneringRepository.GenerateDataAsync(procedure, "[RegionsSelectAll]", values);
+        }
+
+        public async Task<Region> Get(int id)
+        {
+            return await Get(id, "Regions");
         }
     }
 }

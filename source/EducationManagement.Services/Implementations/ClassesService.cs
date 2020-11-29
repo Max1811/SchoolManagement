@@ -1,5 +1,6 @@
 ﻿using EducationManagement.Services.Interfaces;
 using EducatoinManagement.DataAccessLayer.Contracts;
+using EducatoinManagement.DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,19 @@ namespace EducationManagement.Services.Implementations
             this.classesRepository = classesRepository;
         }
 
+        public async Task Delete(int id)
+        {
+            await classesRepository.Delete(id);
+        }
+
         public Task<IActionResult> GenerateRandomData(int maxAmountOfParalelClasses)
         {
             return classesRepository.GeneratePrimaryData(maxAmountOfParalelClasses);
+        }
+
+        public async Task<Class> Get(int id)
+        {
+            return await classesRepository.Get(id);
         }
     }
 }
